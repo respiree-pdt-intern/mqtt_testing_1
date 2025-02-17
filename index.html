@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Price Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold mb-4">Crypto Price Tracker</h1>
+            
+            <!-- Connection Status -->
+            <div class="mb-4">
+                <p>Status: <span id="connection-status" class="font-semibold text-red-500">Disconnected</span></p>
+            </div>
+
+            <!-- Connection Controls -->
+            <div class="mb-6">
+                <button id="connect-btn" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2">
+                    Connect
+                </button>
+                <button id="disconnect-btn" 
+                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" 
+                    disabled>
+                    Disconnect
+                </button>
+            </div>
+
+            <!-- Price Display -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="border rounded p-4 bg-gray-50">
+                    <h3 class="font-bold mb-2">Bitcoin (BTC)</h3>
+                    <p>$<span id="btc-price">---.--</span></p>
+                </div>
+                <div class="border rounded p-4 bg-gray-50">
+                    <h3 class="font-bold mb-2">Ethereum (ETH)</h3>
+                    <p>$<span id="eth-price">---.--</span></p>
+                </div>
+            </div>
+
+            <!-- Updates Log -->
+            <div class="border rounded p-4 h-64 overflow-y-auto bg-gray-50">
+                <div id="messages" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let socket = null;
+        const WEBSOCKET_URL = 'wss://ws.coincap.io/prices?assets=bitcoin,ethereum';
+
+        // DOM Elements
+        const statusEl = document.getElementById('connection-status');
+        const connectBtn = document.getElementById('connect-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const messagesEl = document.getElementById('messages');
+        const btcPriceEl = document.getElementById('btc-price');
+        const ethPriceEl = document.getElementById('eth-price');
+
+        // Connect to WebSocket server
+        connectBtn.addEventListener('click', () => {
+            try {
+                socket = new WebSocket(WEBSOCKET_URL);
+
+                socket.addEvent
